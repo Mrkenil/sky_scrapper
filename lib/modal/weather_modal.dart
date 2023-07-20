@@ -1,70 +1,85 @@
-class weather_modal {
-  final String date;
-  final double maxtemp_c;
-  final double maxtemp_f;
-  final double mintemp_c;
-  final double mintemp_f;
-  final double avgtemp_c;
-  final double avgtemp_f;
-  final double maxwind_kph;
-  final int daily_will_it_rain;
-  final String text;
-  final String icon;
+import 'dart:async';
 
-  weather_modal({
-    required this.date,
+import 'package:flutter/cupertino.dart';
+
+class Weather {
+  String condition;
+  double temp_c;
+  String name;
+  String region;
+  String country;
+  double feelslike_c;
+  double wind_kph;
+  int humidity;
+  double uv;
+  String sunrise;
+  String sunset;
+  int is_day;
+  List hour;
+  String icon;
+
+  double vis_km;
+  double pressure_mb;
+
+  Weather({
+    required this.humidity,
     required this.icon,
-    required this.avgtemp_c,
-    required this.avgtemp_f,
-    required this.daily_will_it_rain,
-    required this.maxtemp_c,
-    required this.maxtemp_f,
-    required this.maxwind_kph,
-    required this.mintemp_c,
-    required this.mintemp_f,
-    required this.text,
+    required this.uv,
+    required this.vis_km,
+    required this.condition,
+    required this.temp_c,
+    required this.name,
+    required this.region,
+    required this.country,
+    required this.pressure_mb,
+    required this.sunrise,
+    required this.sunset,
+    required this.feelslike_c,
+    required this.wind_kph,
+    required this.is_day,
+    required this.hour,
   });
 
-  factory weather_modal.getdata({required Map data}) {
-    return weather_modal(
-        date: data["date"],
-        icon: data["day"]["condition"]["icon"],
-        avgtemp_c: data["day"]["avgtemp_c"],
-        avgtemp_f: data["day"]["avgtemp_f"],
-        daily_will_it_rain: data["day"]["daily_will_it_rain"],
-        maxtemp_c: data["day"]["maxtemp_c"],
-        maxtemp_f: data["day"]["maxtemp_f"],
-        maxwind_kph: data["day"]["maxwind_kph"],
-        mintemp_c: data["day"]["mintemp_c"],
-        mintemp_f: data["day"]["mintemp_f"],
-        text: data["day"]["condition"]["text"]);
+  factory Weather.formMap({required Map data}) {
+    return Weather(
+      condition: data['current']['condition']['text'],
+      icon: data['current']['condition']['icon'],
+      temp_c: data['current']['temp_c'],
+      name: data['location']['name'],
+      region: data['location']['region'],
+      country: data['location']['country'],
+      feelslike_c: data['current']['feelslike_c'],
+      wind_kph: data['current']['wind_kph'],
+      sunset: data['forecast']['forecastday'][0]['astro']['sunset'],
+      is_day: data['current']['is_day'],
+      humidity: data['current']['humidity'],
+      uv: data['current']['uv'],
+      vis_km: data['current']['vis_km'],
+      hour: data['forecast']['forecastday'][0]['hour'],
+      pressure_mb: data['current']['pressure_mb'],
+      sunrise: data['forecast']['forecastday'][0]['astro']['sunrise'],
+    );
   }
 }
 
-class weather_of_1h {
-  final String time;
-  final double temp_c;
-  final double temp_f;
-  final int is_day;
-  final String text;
-  final String icon;
+class SearchLocation {
+  String Location;
+  Weather? weather;
+  TextEditingController locationController;
 
-  weather_of_1h({
-    required this.text,
-    required this.icon,
-    required this.time,
-    required this.is_day,
-    required this.temp_c,
-    required this.temp_f,
+  SearchLocation({
+    required this.Location,
+    this.weather,
+    required this.locationController,
   });
+}
 
-  factory weather_of_1h.getdata({required Map data}) {
-    return weather_of_1h(
-        text: data["text"],
-        icon: data["icon"],
-        time: data["time"],
-        is_day: data["is_day"],
-        temp_c: data["temp_c"],
-        temp_f: data["temp_f"]);
-  }
+class ConnectionModel {
+  String connectivityStatus;
+  StreamSubscription? connectivityStream;
+
+  ConnectionModel({
+    required this.connectivityStatus,
+    this.connectivityStream,
+  });
 }
